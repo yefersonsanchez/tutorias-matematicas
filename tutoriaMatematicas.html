@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorías de Matemáticas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="10" y="20" font-size="8" fill="rgba(255,255,255,0.05)" font-family="serif">∫</text><text x="80" y="40" font-size="6" fill="rgba(255,255,255,0.05)" font-family="serif">π</text><text x="30" y="70" font-size="7" fill="rgba(255,255,255,0.05)" font-family="serif">Σ</text><text x="70" y="80" font-size="5" fill="rgba(255,255,255,0.05)" font-family="serif">∞</text><text x="20" y="90" font-size="6" fill="rgba(255,255,255,0.05)" font-family="serif">√</text></svg>');
+            animation: float 25s infinite linear;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-30px) rotate(360deg); }
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2d3436 0%, #636e72 50%, #74b9ff 100%);
+            color: white;
+            padding: 50px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '∫ ∂ ∑ π ∞ √ ∆ ∇ ∈ ∉ ≤ ≥ ± ∓ × ÷';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            font-size: 3em;
+            opacity: 0.1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: mathFloat 15s infinite linear;
+            pointer-events: none;
+        }
+
+        @keyframes mathFloat {
+            0% { transform: translateX(-100px); }
+            100% { transform: translateX(100px); }
+        }
+
+        .title {
+            font-size: 4em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(45deg, #fff, #e17055);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.4em;
+            opacity: 0.95;
+            position: relative;
+            z-index: 2;
+            font-weight: 300;
+        }
+
+        .content {
+            padding: 50px 30px;
+        }
+
+        .level-badges {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+        }
+
+        .level-badge {
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+            color: white;
+            padding: 20px 35px;
+            border-radius: 50px;
+            font-size: 1.3em;
+            font-weight: bold;
+            text-transform: uppercase;
+            box-shadow: 0 15px 30px rgba(232, 67, 147, 0.4);
+            transform: translateY(0);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .level-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .level-badge:hover::before {
+            left: 100%;
+        }
+
+        .level-badge:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(232, 67, 147, 0.6);
+        }
+
+        .level-badge.university {
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+            box-shadow: 0 15px 30px rgba(0, 184, 148, 0.4);
+        }
+
+        .level-badge.university:hover {
+            box-shadow: 0 20px 40px rgba(0, 184, 148, 0.6);
+        }
+
+        .subjects-section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 2.5em;
+            color: #2d3436;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+            font-weight: bold;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+            border-radius: 2px;
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .subject-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 3px solid transparent;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subject-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+        }
+
+        .subject-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: #74b9ff;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .subject-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5em;
+            font-weight: bold;
+            box-shadow: 0 10px 25px rgba(116, 185, 255, 0.4);
+        }
+
+        .subject-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2d3436;
+            margin-bottom: 10px;
+        }
+
+        .subject-description {
+            color: #636e72;
+            font-size: 1em;
+            line-height: 1.5;
+        }
+
+        .features-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-item {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-left: 5px solid #74b9ff;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            color: #74b9ff;
+        }
+
+        .feature-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2d3436;
+            margin-bottom: 10px;
+        }
+
+        .feature-text {
+            color: #636e72;
+            line-height: 1.4;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #e17055 0%, #d63031 100%);
+            color: white;
+            padding: 50px;
+            text-align: center;
+            border-radius: 20px;
+            margin-top: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '∫∂π∑∞√∆∇';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 8em;
+            opacity: 0.1;
+            animation: rotate 20s infinite linear;
+            pointer-events: none;
+        }
+
+        @keyframes rotate {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .cta-title {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-subtitle {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 2;
+            opacity: 0.9;
+        }
+
+        .cta-highlights {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .highlight-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.1em;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .highlight-badge:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .contact-section {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 25px;
+            border-radius: 15px;
+            position: relative;
+            z-index: 2;
+            backdrop-filter: blur(10px);
+        }
+
+        .contact-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .contact-methods {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .title { font-size: 2.8em; }
+            .level-badges { gap: 15px; }
+            .level-badge { padding: 15px 25px; font-size: 1.1em; }
+            .subjects-grid { grid-template-columns: 1fr; }
+            .cta-title { font-size: 2.2em; }
+            .cta-highlights { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">TUTORÍAS DE MATEMÁTICAS</h1>
+            <p class="subtitle">Domina las matemáticas con clases personalizadas</p>
+        </div>
+
+        <div class="content">
+            <div class="level-badges">
+                <div class="level-badge">🎓 BACHILLERATO</div>
+                <div class="level-badge university">🏛️ UNIVERSIDAD</div>
+            </div>
+
+            <div class="subjects-section">
+                <h2 class="section-title">📚 Especialidades Matemáticas</h2>
+                <div class="subjects-grid">
+                    <div class="subject-card">
+                        <div class="subject-icon">Σ</div>
+                        <div class="subject-name">ÁLGEBRA</div>
+                        <div class="subject-description">Ecuaciones, sistemas, polinomios, factorización y más</div>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon">∫</div>
+                        <div class="subject-name">CÁLCULO DIFERENCIAL</div>
+                        <div class="subject-description">Límites, derivadas, aplicaciones y optimización</div>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon">📊</div>
+                        <div class="subject-name">ÁLGEBRA LINEAL</div>
+                        <div class="subject-description">Matrices, vectores, espacios vectoriales y transformaciones</div>
+                    </div>
+                    <div class="subject-card">
+                        <div class="subject-icon">📐</div>
+                        <div class="subject-name">MATEMÁTICAS BÁSICAS</div>
+                        <div class="subject-description">Aritmética, geometría, trigonometría y fundamentos</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="features-section">
+                <h2 class="section-title">✨ Lo que Ofrecemos</h2>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feature-icon">👨‍🏫</div>
+                        <div class="feature-title">Clases Personalizadas</div>
+                        <div class="feature-text">Metodología adaptada a tu ritmo de aprendizaje</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📝</div>
+                        <div class="feature-title">Trabajos y Tareas</div>
+                        <div class="feature-text">Ayuda completa con ejercicios y proyectos</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🕐</div>
+                        <div class="feature-title">Horarios Flexibles</div>
+                        <div class="feature-text">Clases que se adaptan a tu disponibilidad</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🎯</div>
+                        <div class="feature-title">Resultados Garantizados</div>
+                        <div class="feature-text">Mejora tu rendimiento académico significativamente</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cta-section">
+                <h2 class="cta-title">¡TRANSFORMA TU RELACIÓN CON LAS MATEMÁTICAS!</h2>
+                <p class="cta-subtitle">De la confusión a la comprensión, del miedo al dominio</p>
+                
+                <div class="cta-highlights">
+                    <div class="highlight-badge">✅ Clases Individuales</div>
+                    <div class="highlight-badge">💯 Ejercicios Resueltos</div>
+                    <div class="highlight-badge">🚀 Resultados Rápidos</div>
+                    <div class="highlight-badge">📱 Modalidad Online/Presencial</div>
+                </div>
+
+                <div class="contact-section">
+                    <div class="contact-title">📞 ¡Contáctanos Ahora!</div>
+                    <div class="contact-methods">💬 WhatsApp 3006400968 •</div>
+                    <p style="margin-top: 10px; font-size: 0.9em; opacity: 0.8;">
+                        
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animaciones de entrada
+            const cards = document.querySelectorAll('.subject-card, .feature-item');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.8s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 150);
+            });
+
+            // Efectos hover mejorados
+            const subjects = document.querySelectorAll('.subject-card');
+            subjects.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    const icon = this.querySelector('.subject-icon');
+                    icon.style.transform = 'scale(1.2) rotate(10deg)';
+                    icon.style.transition = 'all 0.3s ease';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    const icon = this.querySelector('.subject-icon');
+                    icon.style.transform = 'scale(1) rotate(0deg)';
+                });
+            });
+
+            // Animación de badges
+            const badges = document.querySelectorAll('.level-badge');
+            badges.forEach(badge => {
+                badge.addEventListener('click', function() {
+                    this.style.animation = 'pulse 0.6s ease';
+                    setTimeout(() => {
+                        this.style.animation = '';
+                    }, 600);
+                });
+            });
+        });
+
+        // Añadir keyframes para pulse
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+                100% { transform: scale(1); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
